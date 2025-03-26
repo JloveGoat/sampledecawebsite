@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prillo.ai</title>
+    <link rel="stylesheet" href="./landing.css">
+    <script src="./landing.js"></script>
+</head>
+<body>
+    <div id="auth-container">
+        <button id="login-button" class="google-btn">Sign in with Google</button>
+        <div id="user-info" style="display: none;">
+            <img id="user-pic" alt="Profile Picture" style="width: 50px; border-radius: 50%;">
+            <span id="user-name"></span>
+            <button id="logout-button">Sign Out</button>
+        </div>
+    </div>
+    <h1 class="title">Prillo.ai</h1>
+    <a href="./main/index.html" class="button">Start to Practice</a>
+    <div class="benefits-container">
+        <div class="benefit-box">
+            <h2>Improve Your Knowledge</h2>
+            <p>Gain a deeper understanding of business concepts and principles.</p>
+        </div>
+        <div class="benefit-box">
+            <h2>Boost Your Confidence</h2>
+            <p>Feel more prepared and confident for your DECA cluster exams.</p>
+        </div>
+        <div class="benefit-box">
+            <h2>Achieve Higher Scores</h2>
+            <p>Increase your chances of scoring higher and advancing in DECA competitions.</p>
+        </div>
+    </div>
+    <!-- Add Firebase SDKs -->
+    <!-- Initialize Firebase -->
+    <script>
+        const firebaseConfig = {
+            // Your Firebase config object (you'll get this from Firebase Console)
+            apiKey: "AIzaSyCsXSRygjdQu_jbQUYjsSJqwZPnS_vxwPk",
+            authDomain: "decawebsite-e3fc4.firebaseapp.com",
+            projectId: "decawebsite-e3fc4",
+            storageBucket: "decawebsite-e3fc4.firebasestorage.app",
+            messagingSenderId: "994503018592",
+            appId: "1:994503018592:web:f719802ae0597163541b05"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script src="./auth.js"></script>
+    <script src="./landing.js"></script>
+
+</body>
+</html>
+

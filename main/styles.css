@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap');
+
+.title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+.body {
+    text-align: center;
+    background-image: url('../images/blue-bg.jpg'); /* Add blue-bg.jpg as the background */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating */
+    min-height: 100vh; /* Ensures the body is at least the height of the viewport */
+    margin: 0; /* Removes default margin */
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
+}
+.container1 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px
+}
+
+.button {
+    flex: 0 0 calc(50% - 20px);
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    width: 190px; /* Fixed width */
+    height: 60px; /* Fixed height */
+    flex-shrink: 0; /* Prevents shrinking */
+    flex-grow: 0; /* Prevents growing */
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 10px; /* Added border-radius for curved corners */
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slight animation on hover */
+}
+
+.nav-button {
+    display: inline-block;
+    margin-left: 0; /* Aligns the nav button to the left */
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Small and Medium devices (below 1024px) - 3 rows of 2 */
+@media only screen and (max-width: 1023px) {
+    .container1 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+/* Large devices (1024px and above) - 2 rows of 3 */
+@media only screen and (min-width: 1024px) {
+    .container1 {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        flex: 0 0 calc(33% - 20px);
+    }
+}

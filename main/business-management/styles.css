@@ -1,0 +1,394 @@
+body {
+    background-image: url('../../images/blue-bg.jpg'); /* Adjust path as needed */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating */
+    min-height: 100vh; /* Ensures the body is at least the height of the viewport */
+    margin: 0; /* Removes default margin */
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
+}
+
+#headercontent {
+    text-align: center;
+}
+
+.quiz-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center; /* Center the content */
+}
+
+.questions-scroll {
+    max-height: 400px; /* Set a max height for the scrolling area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 10px; /* Optional: Rounded corners */
+    padding: 10px; /* Optional: Padding inside the scroll area */
+}
+
+.question-box {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.options-container {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option-btn {
+    padding: 10px;
+    background-color: #007bff; /* Default color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.option-btn.selected {
+    background-color: #0056b3; /* Highlight color when selected */
+}
+
+.option-btn:not(.selected):hover {
+    background-color: #0069d9; /* Change color on hover */
+}
+
+#start-quiz-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #17a2b8; /* Teal color for start quiz */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+#start-quiz-btn:hover {
+    background-color: #138496; /* Darker teal on hover */
+}
+
+#submit-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #28a745; /* Green color for submit */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+#submit-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #ffcc00; /* DECA yellow */
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.button:hover {
+    background-color: #e6b800; /* Darker yellow on hover */
+}
+
+#reset-btn {
+    padding: 10px 20px;
+    background-color: #dc3545; /* Red color for reset */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+#reset-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+#results {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.timer-settings, .quiz-settings {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.select-input {
+    padding: 8px;
+    border: 2px solid #4CAF50;
+    border-radius: 4px;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 70px;
+}
+
+.select-input option {
+    background-color: #003366;
+    color: white;
+}
+
+.select-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+#timer-display {
+    margin-top: 10px;
+    margin-left: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+    border: 2px solid #28a745;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    padding: 5px 10px;
+    max-width: fit-content;
+    text-align: center;
+    height: 30px;
+    min-width: 150px; /* Set a minimum width */
+}
+
+#timer-display.expired {
+    color: #dc3545; /* Red color when time is up */
+}
+
+#pause-btn {
+    width: 150px; /* Match the minimum width of timer display */
+    margin-left: 20px;
+    padding: 0 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 30px;
+}
+
+#pause-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.button.start-quiz {
+    padding: 10px 20px;
+    background-color: #28a745; /* Green color for start quiz */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.button.start-quiz:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Body styles to position the user input container */
+.body {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack elements vertically */
+}
+
+/* User Input Container Styles */
+.user-input-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 600px; /* Set maximum height */
+    width: 550px; /* Set a fixed width for the container */
+    border: 1px solid #ccc; /* Border around the container */
+    padding: 30px 10px 10px; /* Padding inside the container */
+    margin: 20px; /* Margin around the container */
+    position: fixed; /* Fix the position */
+    left: 20px; /* Distance from the left edge */
+    top: 200px; /* Distance from the top edge */
+    background-color: #003366; /* Dark blue background color */
+    color: white; /* Text color for better contrast */
+    text-align: left; /* Align text to the left */
+}
+
+.user-input-container label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Hide the default checkbox */
+.user-input-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.user-input-container label::before {
+    content: '';
+    margin-right: 10px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: 2px solid #4CAF50;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+/* Checked state */
+.user-input-container input[type="checkbox"]:checked + label::before {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+/* Checkmark */
+.user-input-container input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    left: 15px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Hover effect */
+.user-input-container label:hover::before {
+    border-color: #45a049;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Center the heading text */
+#headercontent {
+    text-align: center; /* Center text */
+}
+
+/* Position the Go Back to Home button */
+.go-home {
+    position: fixed; /* Fix the position */
+    top: 20px; /* Distance from the top edge */
+    left: 20px; /* Distance from the left edge */
+}
+
+/* Position the Reset Quiz button */
+.reset-button {
+    position: fixed; /* Fix the position */
+    bottom: 20px; /* Distance from the bottom edge */
+    left: 20px; /* Distance from the left edge */
+}
+
+/* Additional styles for the button */
+.start-quiz {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 15px 32px; /* Padding for top/bottom and left/right */
+    text-align: center; /* Center text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block for proper spacing */
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin for spacing */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s, transform 0.2s; /* Transition effects */
+}
+
+/* Hover effect */
+.start-quiz:hover {
+    background-color: #45a049; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+}
+
+/* Active effect */
+.start-quiz:active {
+    transform: scale(0.95); /* Slightly shrink the button when clicked */
+}
+
+#timer-display {
+    margin-top: 10px; /* Space above the timer display (moved 20px higher) */
+    margin-left: 40px; /* Align with the left side of the scroll section */
+    font-size: 24px; /* Larger font size */
+    font-weight: bold; /* Bold text */
+    color: #28a745; /* Green color for timer */
+    border: 2px solid #28a745; /* Green border */
+    border-radius: 4px; /* Rounded corners for the border */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    display: inline-block; /* Prevent border from extending across the screen */
+    padding: 5px 10px; /* Add some padding for better appearance */
+    max-width: fit-content; /* Ensure the box only takes up as much space as needed */
+    text-align: center; /* Center the text inside the box */
+    height: 30px;
+}
+#timer-display.expired {
+    color: #dc3545; /* Red color when time is up */
+}
+
+#pause-btn {
+    width: 100px; /* Set the desired width */
+    margin-left: 20px; /* Space between the timer and the button */
+    padding: 0 15px; /* Remove padding to ensure the button height is exactly 30px */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition effect */
+    height: 30px; /* Set the height of the button */
+
+}
+
+#pause-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+.user-input-container::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+}
+
+.user-input-container::-webkit-scrollbar-track {
+    background: #003366; /* Background of the scrollbar track */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.user-input-container::-webkit-scrollbar-thumb {
+    background: #4CAF50; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners */
+    transition: background 0.3s; /* Smooth transition */
+}
+
+.user-input-container::-webkit-scrollbar-thumb:hover {
+    background: #45a049; /* Darker green on hover */
+}
+
+/* For Firefox */
+.user-input-container {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: #4CAF50 #003366; /* Thumb color and track color */
+}

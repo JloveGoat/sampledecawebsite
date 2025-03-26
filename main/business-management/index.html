@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Management</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./script.js" defer></script> <!-- Use defer to ensure the script loads after the HTML -->
+</head>
+<body class="body">
+    <button class="button go-home" onclick="redirectToHome()">Go Back to Home</button>
+    
+    <div id="headercontent" style="text-align: center;">
+        <h1 class="title">Business Management and Administration</h1>
+        <p>Welcome to the Business Management and Administration page.</p>
+        <p>Here you will find resources and information about DECA's Business Management and Administration events.</p>
+    </div>
+    
+    <!-- User Input Container -->
+    <div class="user-input-container">
+        <div class="timer-settings">
+            <label for="timer-count" style="margin-right: 10px;">Select timer duration (minutes):</label>
+            <select id="timer-count" class="select-input">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+        
+        <div class="quiz-settings">
+            <label for="question-count" style="margin-right: 10px;">Select number of questions:</label>
+            <select id="question-count" class="select-input">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+
+        <form id="topics-form">
+            <h3 style="margin-top: 20px; margin-bottom: 15px;">Select Topics for Quiz:</h3>
+            <input type="checkbox" id="businessLaw" name="topics" value="businessLaw">
+            <label for="businessLaw">Business Law</label><br>
+            
+            <input type="checkbox" id="communications" name="topics" value="communications">
+            <label for="communications">Communications</label><br>
+            
+            <input type="checkbox" id="customerRelations" name="topics" value="customerRelations">
+            <label for="customerRelations">Customer Relations</label><br>
+            
+            <input type="checkbox" id="economics" name="topics" value="economics">
+            <label for="economics">Economics</label><br>
+            
+            <input type="checkbox" id="entrepreneurship" name="topics" value="entrepreneurship">
+            <label for="entrepreneurship">Entrepreneurship</label><br>
+            
+            <input type="checkbox" id="financialAnalysis" name="topics" value="financialAnalysis">
+            <label for="financialAnalysis">Financial Analysis</label><br>
+            
+            <input type="checkbox" id="hrManagement" name="topics" value="hrManagement">
+            <label for="hrManagement">Human Resources Management</label><br>
+            
+            <input type="checkbox" id="informationManagement" name="topics" value="informationManagement">
+            <label for="informationManagement">Information Management</label><br>
+            
+            <input type="checkbox" id="innovation" name="topics" value="innovation">
+            <label for="innovation">Innovation</label><br>
+            
+            <input type="checkbox" id="knowledgeManagement" name="topics" value="knowledgeManagement">
+            <label for="knowledgeManagement">Knowledge Management</label><br>
+            
+            <input type="checkbox" id="marketing" name="topics" value="marketing">
+            <label for="marketing">Marketing</label><br>
+            
+            <input type="checkbox" id="operations" name="topics" value="operations">
+            <label for="operations">Operations</label><br>
+            
+            <input type="checkbox" id="professionalDevelopment" name="topics" value="professionalDevelopment">
+            <label for="professionalDevelopment">Professional Development</label><br>
+            
+            <input type="checkbox" id="projectManagement" name="topics" value="projectManagement">
+            <label for="projectManagement">Project Management</label><br>
+            
+            <input type="checkbox" id="qualityManagement" name="topics" value="qualityManagement">
+            <label for="qualityManagement">Quality Management</label><br>
+            
+            <input type="checkbox" id="riskManagement" name="topics" value="riskManagement">
+            <label for="riskManagement">Risk Management</label><br>
+            
+            <input type="checkbox" id="strategicManagement" name="topics" value="strategicManagement">
+            <label for="strategicManagement">Strategic Management</label><br>
+            
+            <button type="button" class="button start-quiz" onclick="startQuiz()">Start Quiz</button>
+        </form>
+    </div>
+
+    <button id="reset-btn" onclick="resetQuiz()" class="reset-button">Reset Quiz</button>
+    <div id="timer-display-container" style="display: flex; align-items: center;">
+        <div id="timer-display">Time left: 1:00</div> <!-- Initial display -->
+        <button id="pause-btn" class="button" onclick="togglePause()">Pause</button>
+    </div>
+    <!-- Quiz Container -->
+    <div class="quiz-container">
+        <div class="questions-scroll" style="display: none;">
+            <div id="questions-container"></div> <!-- Questions will be inserted here -->
+        </div>
+        <button id="submit-btn" onclick="checkAnswers()" style="display: none;">Submit</button>
+        <div id="results"></div> <!-- Results will be displayed here -->
+    </div>  
+</body>
+</html>
