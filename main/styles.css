@@ -82,8 +82,8 @@
     }
 }
 
-/* Add these progress display styles */
-#progress-display {
+/* Change this in main/styles.css */
+.main-page-progress {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -96,12 +96,12 @@
     min-width: 200px;
 }
 
-#progress-display h3 {
+.main-page-progress h3 {
     margin: 0 0 10px 0;
     color: #333;
 }
 
-#progress-display p {
+.main-page-progress p {
     margin: 5px 0;
     color: #666;
 }
