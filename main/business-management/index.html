@@ -110,5 +110,19 @@
         <button id="submit-btn" onclick="checkAnswers()" style="display: none;">Submit</button>
         <div id="results"></div> <!-- Results will be displayed here -->
     </div>  
+
+    <!-- Add these scripts before your existing scripts -->
+    <script type="module">
+        import { logQuestionCompleted } from '../../progress.js';
+        window.logQuestionCompleted = logQuestionCompleted;
+    </script>
+    <script src="./script.js"></script>
+    <!-- At the bottom of your body tag -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js';
+    </script>
+    <script type="module" src="./script.js"></script>
 </body>
 </html>
