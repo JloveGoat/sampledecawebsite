@@ -67,3 +67,7 @@ function checkAnswers() {
         ${feedback}
     `;
 }
+
+if (loginButton) {
+    loginButton.addEventListener('click', signInWithGoogle);
+}
