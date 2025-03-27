@@ -1,5 +1,9 @@
-   // Your web app's Firebase configuration
-   const firebaseConfig = {
+// Import and configure Firebase
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
     apiKey: "AIzaSyCsXSRygjdQu_jbQUYjsSJqwZPnS_vxwPk",
     authDomain: "decawebsite-e3fc4.firebaseapp.com",
     projectId: "decawebsite-e3fc4",
@@ -9,30 +13,80 @@
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
+// Wait for DOM to load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, setting up auth...'); // Debug log
+    
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userInfo = document.getElementById('user-info');
+    const userPic = document.getElementById('user-pic');
+    const userName = document.getElementById('user-name');
 
-document.getElementById('googleLogin').addEventListener('click', () => {
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            console.log('User signed in:', result.user);
-            // Save user data to local storage or database
-        })
-        .catch((error) => {
-            console.error('Error signing in:', error);
-        });
-});
+    // Sign in with Google
+    function signInWithGoogle() {
+        console.log('Attempting Google sign in...'); // Debug log
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log('Successfully signed in:', result.user.displayName);
+                const user = result.user;
+                // Save user data to localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    uid: user.uid,
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL
+                }));
+            })
+            .catch((error) => {
+                console.error('Error signing in:', error);
+                console.log('Error details:', error.code, error.message);
+                alert('Failed to sign in. Please try again.');
+            });
+    }
 
-const userId = result.user.uid; // Get user ID
-const userProgress = { /* your progress data */ };
+    // Sign out
+    function signOut() {
+        console.log('Attempting sign out...'); // Debug log
+        auth.signOut()
+            .then(() => {
+                console.log('Successfully signed out');
+                localStorage.removeItem('user');
+            })
+            .catch((error) => {
+                console.error('Error signing out:', error);
+                alert('Failed to sign out. Please try again.');
+            });
+    }
 
-// Save to Firestore
-firebase.firestore().collection('users').doc(userId).set(userProgress)
-    .then(() => {
-        console.log('User progress saved!');
-    })
-    .catch((error) => {
-        console.error('Error saving progress:', error);
+    // Auth state observer
+    auth.onAuthStateChanged((user) => {
+        console.log('Auth state changed:', user ? 'logged in' : 'logged out');
+        if (user) {
+            // User is signed in
+            if (loginButton) loginButton.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'flex';
+            if (userPic) userPic.src = user.photoURL || 'default-profile-pic.png';
+            if (userName) userName.textContent = user.displayName;
+        } else {
+            // User is signed out
+            if (loginButton) loginButton.style.display = 'block';
+            if (userInfo) userInfo.style.display = 'none';
+        }
     });
+
+    // Add click event listeners
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            console.log('Login button clicked'); // Debug log
+            signInWithGoogle();
+        });
+    }
+    if (logoutButton) {
+        logoutButton.addEventListener('click', signOut);
+    }
+});

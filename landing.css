@@ -50,28 +50,58 @@ body {
     background-attachment: fixed; /* Keeps the background fixed while scrolling */
 }
 
+/* Add these to your existing CSS */
+#auth-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
 .google-btn {
-    background-color: #4285f4;
-    color: white;
-    padding: 10px 20px;
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #757575;
+    padding: 12px 24px;
+    border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-weight: 500;
+    gap: 12px;
+    transition: background-color 0.3s;
+}
+
+.google-btn img {
+    width: 18px;
+    height: 18px;
 }
 
 .google-btn:hover {
-    background-color: #357abd;
+    background-color: #f5f5f5;
 }
 
 #user-info {
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#user-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+#user-name {
+    color: #333;
+    font-weight: 500;
 }
 
 #logout-button {
@@ -81,4 +111,9 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#logout-button:hover {
+    background-color: #c82333;
 }
