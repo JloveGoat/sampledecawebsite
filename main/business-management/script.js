@@ -1,4 +1,11 @@
 // Array of questions
+import { logQuestionCompleted } from '../../progress.js';
+
+// Find your existing checkAnswer function and add this inside it:
+async function checkAnswer(/* your existing parameters */) {
+    const isCorrect = /* your existing logic */
+    await logQuestionCompleted('question-id', isCorrect);
+}
 const questionGroups = {
     businessLaw: {
         multipleChoice: [
