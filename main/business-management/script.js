@@ -1,11 +1,4 @@
 // Array of questions
-
-// Find your existing checkAnswer function and add this inside it:
-async function checkAnswer(/* your existing parameters */) {
-    const isCorrect = /* your existing logic */
-    await logQuestionCompleted('question-id', isCorrect);
-}
-
 const questionGroups = {
     businessLaw: {
         multipleChoice: [
@@ -368,17 +361,22 @@ function checkAnswers() {
         feedback += `Correct Answer: ${selectedQuestions[index].options[selectedQuestions[index].correctAnswer]}<br><br>`;
     });
 
-    // Add this line to log progress
-    try {
-        window.logQuestionCompleted && window.logQuestionCompleted('quiz-attempt', score === numberOfQuestions);
-    } catch (error) {
-        console.log('Progress logging not available');
-    }
-
+    // Display results
     document.getElementById('results').innerHTML = `
         Score: ${score}/${numberOfQuestions}<br>
         ${feedback}
     `;
+
+    // Save results to Firebase
+    console.log("Saving quiz results...");
+    console.log(`Score: ${score}/${numberOfQuestions}`);
+    
+    try {
+        saveQuizResult('Business Management', numberOfQuestions, score);
+        console.log("Called saveQuizResult function");
+    } catch (error) {
+        console.error("Error saving quiz result:", error);
+    }
 }
 
 function redirectToHome() {

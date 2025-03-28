@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Business Management</title>
     <link rel="stylesheet" href="./styles.css">
+     <!-- Add these Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase config script should be here -->
+    <script>
+        const firebaseConfig = {
+        apiKey: "AIzaSyCsXSRygjdQu_jbQUYjsSJqwZPnS_vxwPk",
+        authDomain: "decawebsite-e3fc4.firebaseapp.com",
+        projectId: "decawebsite-e3fc4",
+        storageBucket: "decawebsite-e3fc4.firebasestorage.app",
+        messagingSenderId: "994503018592",
+        appId: "1:994503018592:web:f719802ae0597163541b05"
+};
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <!-- Reference to main script.js -->
+    <script src="../script.js"></script>
     <script src="./script.js" defer></script> <!-- Use defer to ensure the script loads after the HTML -->
 </head>
 <body class="body">
