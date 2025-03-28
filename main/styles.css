@@ -82,6 +82,30 @@
     }
 }
 
+/* Add these progress display styles */
+#progress-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    color: black;
+    min-width: 200px;
+}
+
+#progress-display h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+#progress-display p {
+    margin: 5px 0;
+    color: #666;
+}
+
 /* Change this in main/styles.css */
 .main-page-progress {
     position: fixed;
