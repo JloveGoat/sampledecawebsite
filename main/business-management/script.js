@@ -373,10 +373,6 @@ function checkAnswers() {
     // Save to Firebase and update progress
     try {
         saveQuizResult('Business Management', numberOfQuestions, score);
-        // Redirect to main page after saving
-        setTimeout(() => {
-            window.location.href = '../index.html';
-        }, 2000); // Wait 2 seconds before redirecting
     } catch (error) {
         console.error("Error saving quiz result:", error);
     }
