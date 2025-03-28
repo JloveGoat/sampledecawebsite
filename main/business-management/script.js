@@ -385,14 +385,33 @@ function checkAnswers() {
         ${feedback}
     `;
 
-    console.log("Quiz completed!");
-    console.log(`Score: ${score}/${numberOfQuestions}`);
+    // Save result to localStorage first
+    const result = {
+        timestamp: new Date().toISOString(),
+        category: 'Business Management',
+        totalQuestions: numberOfQuestions,
+        correctAnswers: score,
+        accuracy: (score / numberOfQuestions) * 100
+    };
 
-    // Save to Firebase and update progress
-    try {
-        saveQuizResult('Business Management', numberOfQuestions, score);
-    } catch (error) {
-        console.error("Error saving quiz result:", error);
+    // Store in localStorage
+    let results = JSON.parse(localStorage.getItem('quizResults') || '[]');
+    results.push(result);
+    localStorage.setItem('quizResults', JSON.stringify(results));
+
+    // Try to save to Firebase
+    const user = firebase.auth().currentUser;
+    if (user) {
+        firebase.firestore().collection('users')
+            .doc(user.uid)
+            .collection('quizResults')
+            .add(result)
+            .then(() => {
+                console.log("Quiz result saved to Firebase!");
+            })
+            .catch((error) => {
+                console.log("Saved locally, will sync when online");
+            });
     }
 }
 
