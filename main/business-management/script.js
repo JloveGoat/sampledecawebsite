@@ -375,40 +375,36 @@ function selectAnswer(questionIndex, optionIndex) {
 }
 
 function checkAnswers() {
-    console.log("checkAnswers function called");
-    
     if (currentAnswers.includes(null)) {
         document.getElementById('results').innerHTML = 'Please answer all questions!';
         return;
     }
 
     let score = 0;
-    let feedback = '';
-
     currentAnswers.forEach((answer, index) => {
-        if (answer === selectedQuestions[index].correctAnswer) {
-            score++;
-        }
-        feedback += `Question ${index + 1}: ${answer === selectedQuestions[index].correctAnswer ? 'Correct' : 'Incorrect'}<br>`;
-        feedback += `Correct Answer: ${selectedQuestions[index].options[selectedQuestions[index].correctAnswer]}<br><br>`;
+        if (answer === selectedQuestions[index].correctAnswer) score++;
     });
 
-    // Display results
-    document.getElementById('results').innerHTML = `
-        Score: ${score}/${numberOfQuestions}<br>
-        ${feedback}
-        <br>
-        <button class="button" onclick="window.location.href='../index.html'">Return to Home</button>
-    `;
-
-    // Save results without redirecting
+    // Save results first
     saveQuizResult('Business Management', numberOfQuestions, score)
         .then(() => {
-            console.log("Quiz result saved successfully!");
+            console.log("Results saved successfully");
+            // Now display results
+            let feedback = '';
+            currentAnswers.forEach((answer, index) => {
+                feedback += `Question ${index + 1}: ${answer === selectedQuestions[index].correctAnswer ? 'Correct' : 'Incorrect'}<br>`;
+                feedback += `Correct Answer: ${selectedQuestions[index].options[selectedQuestions[index].correctAnswer]}<br><br>`;
+            });
+
+            document.getElementById('results').innerHTML = `
+                Score: ${score}/${numberOfQuestions}<br>
+                ${feedback}
+                <button onclick="window.location.href='../index.html'" class="button">Return to Home</button>
+            `;
         })
-        .catch((error) => {
-            console.error("Error saving quiz result:", error);
-            alert("There was an error saving your results, but you can still review your answers.");
+        .catch(error => {
+            console.error("Error saving results:", error);
+            alert("There was an error saving your results. Please try again.");
         });
 }
 
