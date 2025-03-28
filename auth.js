@@ -90,3 +90,35 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.addEventListener('click', signOut);
     }
 });
+
+function saveQuizResult(category, totalQuestions, correctAnswers) {
+    // Get the current user
+    const user = firebase.auth().currentUser;
+    
+    if (!user) {
+        console.log("No user logged in");
+        return;
+    }
+
+    // Create a new result object
+    const result = {
+        timestamp: new Date().toISOString(),
+        category: category,
+        totalQuestions: totalQuestions,
+        correctAnswers: correctAnswers,
+        accuracy: (correctAnswers / totalQuestions) * 100
+    };
+
+    // Save to Firebase
+    firebase.firestore().collection('users')
+        .doc(user.uid)
+        .collection('quizResults')
+        .add(result)
+        .then(() => {
+            console.log("Quiz result saved successfully");
+            updateProgressDisplay(); // We'll create this function next
+        })
+        .catch((error) => {
+            console.error("Error saving quiz result:", error);
+        });
+}

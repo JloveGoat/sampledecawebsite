@@ -1,13 +1,20 @@
 function updateProgress(totalQuestions, correctAnswers) {
+    const totalElement = document.getElementById('total-questions');
+    const correctElement = document.getElementById('correct-answers');
+    const semicircle = document.querySelector('.semicircle');
+    const percentage = document.querySelector('.percentage');
+
+    if (!totalElement || !correctElement || !semicircle || !percentage) {
+        console.log("Progress display elements not found");
+        return;
+    }
+
     // Update numbers
-    document.getElementById('total-questions').textContent = totalQuestions;
-    document.getElementById('correct-answers').textContent = correctAnswers;
+    totalElement.textContent = totalQuestions;
+    correctElement.textContent = correctAnswers;
     
     // Calculate and update accuracy
     const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
-    const semicircle = document.querySelector('.semicircle');
-    const percentage = document.querySelector('.percentage');
-    
     semicircle.style.setProperty('--progress', `${accuracy}%`);
     percentage.textContent = `${Math.round(accuracy)}%`;
 }
@@ -18,11 +25,13 @@ function updateProgress(totalQuestions, correctAnswers) {
 // ... existing updateProgress function ...
 
 function saveQuizResult(category, totalQuestions, correctAnswers) {
-    // Get the current user
+    console.log("Attempting to save quiz result...");
+    console.log(`Category: ${category}, Score: ${correctAnswers}/${totalQuestions}`);
+
     const user = firebase.auth().currentUser;
     
     if (!user) {
-        console.log("No user logged in");
+        console.log("No user logged in - cannot save results");
         return;
     }
 
@@ -35,17 +44,21 @@ function saveQuizResult(category, totalQuestions, correctAnswers) {
         accuracy: (correctAnswers / totalQuestions) * 100
     };
 
+    console.log("Saving result:", result);
+
     // Save to Firebase
-    firebase.firestore().collection('users')
+    return firebase.firestore().collection('users')
         .doc(user.uid)
         .collection('quizResults')
         .add(result)
         .then(() => {
-            console.log("Quiz result saved successfully");
-            updateProgress(totalQuestions, correctAnswers); // Use existing updateProgress function
+            console.log("Quiz result saved successfully!");
+            // After saving, load overall progress
+            return loadOverallProgress();
         })
         .catch((error) => {
             console.error("Error saving quiz result:", error);
+            throw error;
         });
 }
 

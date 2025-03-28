@@ -367,13 +367,16 @@ function checkAnswers() {
         ${feedback}
     `;
 
-    // Save results to Firebase
-    console.log("Saving quiz results...");
+    console.log("Quiz completed!");
     console.log(`Score: ${score}/${numberOfQuestions}`);
-    
+
+    // Save to Firebase and update progress
     try {
         saveQuizResult('Business Management', numberOfQuestions, score);
-        console.log("Called saveQuizResult function");
+        // Redirect to main page after saving
+        setTimeout(() => {
+            window.location.href = '../index.html';
+        }, 2000); // Wait 2 seconds before redirecting
     } catch (error) {
         console.error("Error saving quiz result:", error);
     }
