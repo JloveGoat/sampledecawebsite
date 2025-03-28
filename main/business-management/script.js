@@ -294,45 +294,6 @@ let timer; // Timer variable
 let timeLeft; // Time left in seconds
 let isPaused = false; // Flag to check if the timer is paused
 
-function startQuiz() {
-    const selectElement = document.getElementById('question-count');
-    numberOfQuestions = parseInt(selectElement.value); // Get the selected number of questions
-
-    const timerElement = document.getElementById('timer-count');
-    const selectedMinutes = parseInt(timerElement.value);
-    timeLeft = selectedMinutes * 60; // Convert minutes to seconds
-
-    // Get selected topics
-    const selectedTopics = Array.from(document.querySelectorAll('input[name="topics"]:checked')).map(el => el.value);
-    
-    if (selectedTopics.length === 0) {
-        alert("Please select at least one topic.");
-        return; // Exit if no topics are selected
-    }
-
-    // Retrieve questions based on selected topics
-    selectedQuestions = [];
-    selectedTopics.forEach(topic => {
-        if (questionGroups[topic]) {
-            const questions = questionGroups[topic].multipleChoice;
-            selectedQuestions.push(...questions);
-        }
-    });
-
-    // Shuffle and select the specified number of questions
-    selectRandomQuestions();
-    displayQuestions();
-    
-    // Show the submit button
-    document.getElementById('submit-btn').style.display = 'block';
-
-    // Show the questions scroll area
-    document.querySelector('.questions-scroll').style.display = 'block'; // Make it visible
-
-    // Start the timer
-    startTimer();
-}
-
 function selectRandomQuestions() {
     // Randomly select the specified number of questions from the array
     const shuffledQuestions = selectedQuestions.sort(() => 0.5 - Math.random());
@@ -414,30 +375,86 @@ function resetQuiz() {
 }
 
 function startTimer() {
+    // Clear any existing timer first
+    if (timer) {
+        clearInterval(timer);
+    }
+    
+    // Reset isPaused
+    isPaused = false;
+    
     timer = setInterval(() => {
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            document.getElementById('results').innerHTML = 'Time is up! Submitting your answers...';
-            checkAnswers(); // Automatically submit answers when time is up
-        } else {
-            // Change color to red if 1 minute (60 seconds) is left
-            if (timeLeft === 60) {
-                document.getElementById('timer-display').style.color = 'red'; // Change timer text color
-                document.getElementById('pause-btn').style.backgroundColor = 'red'; // Change pause button background color
-            } else if (timeLeft > 60) {
-                // Reset colors if time is above 1 minute
-                document.getElementById('timer-display').style.color = '#28a745'; // Reset timer text color
-                document.getElementById('pause-btn').style.backgroundColor = '#4CAF50'; // Reset pause button background color
+        if (!isPaused) {  // Only countdown if not paused
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('results').innerHTML = 'Time is up! Submitting your answers...';
+                checkAnswers(); // Automatically submit answers when time is up
+            } else {
+                // Change color to red if 1 minute (60 seconds) is left
+                if (timeLeft === 60) {
+                    document.getElementById('timer-display').style.color = 'red';
+                    document.getElementById('pause-btn').style.backgroundColor = 'red';
+                } else if (timeLeft > 60) {
+                    // Reset colors if time is above 1 minute
+                    document.getElementById('timer-display').style.color = '#28a745';
+                    document.getElementById('pause-btn').style.backgroundColor = '#4CAF50';
+                }
+                timeLeft--;
+                document.getElementById('timer-display').innerText = 
+                    `Time left: ${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`;
             }
-            timeLeft--;
-            document.getElementById('timer-display').innerText = `Time left: ${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`;
         }
     }, 1000); // Update every second
 }
 
+// Update togglePause function
 function togglePause() {
-    isPaused = !isPaused; // Toggle the pause state
+    isPaused = !isPaused;
     const pauseButton = document.getElementById('pause-btn');
-    pauseButton.innerText = isPaused ? 'Resume' : 'Pause'; // Change button text
+    pauseButton.innerText = isPaused ? 'Resume' : 'Pause';
 }
 
+// Update startQuiz function to ensure clean timer start
+function startQuiz() {
+    // Clear any existing timer
+    if (timer) {
+        clearInterval(timer);
+    }
+
+    const selectElement = document.getElementById('question-count');
+    numberOfQuestions = parseInt(selectElement.value);
+
+    const timerElement = document.getElementById('timer-count');
+    const selectedMinutes = parseInt(timerElement.value);
+    timeLeft = selectedMinutes * 60;
+
+    // Get selected topics
+    const selectedTopics = Array.from(document.querySelectorAll('input[name="topics"]:checked')).map(el => el.value);
+    
+    if (selectedTopics.length === 0) {
+        alert("Please select at least one topic.");
+        return;
+    }
+
+    // Retrieve questions based on selected topics
+    selectedQuestions = [];
+    selectedTopics.forEach(topic => {
+        if (questionGroups[topic]) {
+            const questions = questionGroups[topic].multipleChoice;
+            selectedQuestions.push(...questions);
+        }
+    });
+
+    // Shuffle and select questions
+    selectRandomQuestions();
+    displayQuestions();
+    
+    // Show the submit button
+    document.getElementById('submit-btn').style.display = 'block';
+
+    // Show the questions scroll area
+    document.querySelector('.questions-scroll').style.display = 'block';
+
+    // Start the timer
+    startTimer();
+}
