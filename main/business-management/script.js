@@ -1,3 +1,21 @@
+// Add this at the top of both files
+document.addEventListener('DOMContentLoaded', () => {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("User is logged in:", user.email);
+            const userInfo = document.getElementById('user-info');
+            const userEmail = document.getElementById('user-email');
+            const userPhoto = document.getElementById('user-photo');
+            
+            if (userInfo && userEmail && userPhoto) {
+                userInfo.style.display = 'flex';
+                userEmail.textContent = user.email;
+                userPhoto.src = user.photoURL;
+            }
+        }
+    });
+});
+
 // Array of questions
 const questionGroups = {
     businessLaw: {
@@ -416,3 +434,4 @@ function togglePause() {
     const pauseButton = document.getElementById('pause-btn');
     pauseButton.innerText = isPaused ? 'Resume' : 'Pause'; // Change button text
 }
+

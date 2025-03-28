@@ -1,3 +1,22 @@
+// Add this at the top of both files
+document.addEventListener('DOMContentLoaded', () => {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("User is logged in:", user.email);
+            const userInfo = document.getElementById('user-info');
+            const userEmail = document.getElementById('user-email');
+            const userPhoto = document.getElementById('user-photo');
+            
+            if (userInfo && userEmail && userPhoto) {
+                userInfo.style.display = 'flex';
+                userEmail.textContent = user.email;
+                userPhoto.src = user.photoURL;
+            }
+        }
+    });
+});
+
+
 function updateProgress(totalQuestions, correctAnswers) {
     const totalElement = document.getElementById('total-questions');
     const correctElement = document.getElementById('correct-answers');
@@ -101,3 +120,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
