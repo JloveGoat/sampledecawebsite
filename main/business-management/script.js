@@ -1,4 +1,16 @@
 // Add this at the top of both files
+// Add network status monitoring
+window.addEventListener('online', function() {
+    console.log('Network connection restored');
+});
+
+window.addEventListener('offline', function() {
+    console.log('Network connection lost');
+});
+
+// Check initial network status
+console.log('Initial network status:', navigator.onLine ? 'online' : 'offline');
+
 document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -385,7 +397,7 @@ function checkAnswers() {
         ${feedback}
     `;
 
-    // Save result to localStorage first
+    // Create result object
     const result = {
         timestamp: new Date().toISOString(),
         category: 'Business Management',
@@ -394,24 +406,54 @@ function checkAnswers() {
         accuracy: (score / numberOfQuestions) * 100
     };
 
-    // Store in localStorage
+    console.log("Attempting to save quiz result:", result);
+
+    // Store in localStorage first
     let results = JSON.parse(localStorage.getItem('quizResults') || '[]');
     results.push(result);
     localStorage.setItem('quizResults', JSON.stringify(results));
 
-    // Try to save to Firebase
+    // Try to save to Firebase with retry logic
     const user = firebase.auth().currentUser;
     if (user) {
-        firebase.firestore().collection('users')
-            .doc(user.uid)
-            .collection('quizResults')
-            .add(result)
-            .then(() => {
-                console.log("Quiz result saved to Firebase!");
-            })
-            .catch((error) => {
-                console.log("Saved locally, will sync when online");
-            });
+        const saveAttempt = (retries = 3) => {
+            console.log(`Attempting to save to Firebase (${retries} retries left)`);
+            
+            firebase.firestore().collection('users')
+                .doc(user.uid)
+                .collection('quizResults')
+                .add(result)
+                .then(() => {
+                    console.log("Quiz result saved successfully to Firebase!");
+                    // Add delay before redirect
+                    setTimeout(() => {
+                        console.log("Redirecting to main page...");
+                        window.location.href = "../index.html";
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Error saving to Firebase:", error);
+                    if (retries > 0) {
+                        console.log("Retrying save...");
+                        setTimeout(() => saveAttempt(retries - 1), 1000);
+                    } else {
+                        console.log("All save attempts failed. Results saved locally only.");
+                        alert("Network connection issues. Results saved locally and will sync when connection is restored.");
+                        setTimeout(() => {
+                            window.location.href = "../index.html";
+                        }, 2000);
+                    }
+                });
+        };
+
+        saveAttempt();
+    } else {
+        console.error("No user logged in - cannot save to Firebase");
+        alert("You must be logged in to save results!");
+        // Still redirect after a delay
+        setTimeout(() => {
+            window.location.href = "../index.html";
+        }, 2000);
     }
 }
 
