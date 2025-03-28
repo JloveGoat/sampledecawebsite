@@ -1,5 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Page loaded, checking auth state...");
+
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("User is logged in:", user.email);
+            // Only try to load progress if we're on the main page
+            if (!window.location.pathname.includes('business-management')) {
+                loadOverallProgress();
+            }
+        } else {
+            console.log("No user logged in");
+        }
+    });
     
     // Verify progress elements exist
     const progressElements = {
@@ -93,59 +105,64 @@ function saveQuizResult(category, totalQuestions, correctAnswers) {
 }
 
 function loadOverallProgress() {
-    console.log("Loading overall progress...");
-    const user = firebase.auth().currentUser;
-    
-    if (!user) {
-        console.log("No user logged in in loadOverallProgress");
-        return;
-    }
+    // Only try to load progress if we're on the main page
+    if (!window.location.pathname.includes('business-management')) {
+        console.log("Loading overall progress...");
+        const user = firebase.auth().currentUser;
+        
+        if (!user) {
+            console.log("No user logged in in loadOverallProgress");
+            return;
+        }
 
-    // Wait for DOM elements to be ready
-    const totalElement = document.getElementById('total-questions');
-    const correctElement = document.getElementById('correct-answers');
-    const semicircle = document.querySelector('.semicircle');
-    const percentage = document.querySelector('.percentage');
+        // Check for progress elements
+        const totalElement = document.getElementById('total-questions');
+        const correctElement = document.getElementById('correct-answers');
+        const semicircle = document.querySelector('.semicircle');
+        const percentage = document.querySelector('.percentage');
 
-    if (!totalElement || !correctElement || !semicircle || !percentage) {
-        console.error("Progress elements not found. Current page:", window.location.pathname);
-        return;
-    }
+        if (!totalElement || !correctElement || !semicircle || !percentage) {
+            console.error("Progress elements not found. Current page:", window.location.pathname);
+            return;
+        }
 
-    console.log("Fetching results for user:", user.uid);
+        console.log("Fetching results for user:", user.uid);
 
-    // Get all quiz results for the user
-    return firebase.firestore().collection('users')
-        .doc(user.uid)
-        .collection('quizResults')
-        .get()
-        .then((querySnapshot) => {
-            let totalQuestions = 0;
-            let totalCorrect = 0;
+        // Get all quiz results for the user
+        return firebase.firestore().collection('users')
+            .doc(user.uid)
+            .collection('quizResults')
+            .get()
+            .then((querySnapshot) => {
+                let totalQuestions = 0;
+                let totalCorrect = 0;
 
-            console.log("Found results:", querySnapshot.size);
+                console.log("Found results:", querySnapshot.size);
 
-            querySnapshot.forEach((doc) => {
-                const result = doc.data();
-                console.log("Processing result:", result);
-                totalQuestions += Number(result.totalQuestions);
-                totalCorrect += Number(result.correctAnswers);
+                querySnapshot.forEach((doc) => {
+                    const result = doc.data();
+                    console.log("Processing result:", result);
+                    totalQuestions += Number(result.totalQuestions);
+                    totalCorrect += Number(result.correctAnswers);
+                });
+
+                console.log(`Calculated totals: ${totalCorrect}/${totalQuestions}`);
+                
+                // Update the display elements
+                totalElement.textContent = totalQuestions;
+                correctElement.textContent = totalCorrect;
+                
+                // Calculate and update accuracy
+                const accuracy = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+                semicircle.style.setProperty('--progress', `${accuracy}%`);
+                percentage.textContent = `${Math.round(accuracy)}%`;
+                
+                console.log(`Updated accuracy to: ${accuracy}%`);
+            })
+            .catch((error) => {
+                console.error("Error loading progress:", error);
             });
-
-            console.log(`Calculated totals: ${totalCorrect}/${totalQuestions}`);
-            
-            // Update the display elements
-            totalElement.textContent = totalQuestions;
-            correctElement.textContent = totalCorrect;
-            
-            // Calculate and update accuracy
-            const accuracy = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
-            semicircle.style.setProperty('--progress', `${accuracy}%`);
-            percentage.textContent = `${Math.round(accuracy)}%`;
-            
-            console.log(`Updated accuracy to: ${accuracy}%`);
-        })
-        .catch((error) => {
-            console.error("Error loading progress:", error);
-        });
+    } else {
+        console.log("Not on main page, skipping progress load");
+    }
 }
