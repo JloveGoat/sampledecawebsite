@@ -1,21 +1,16 @@
-// Add this at the top of both files
+// Auth state listener
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Page loaded, checking auth state...");
+    
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             console.log("User is logged in:", user.email);
-            const userInfo = document.getElementById('user-info');
-            const userEmail = document.getElementById('user-email');
-            const userPhoto = document.getElementById('user-photo');
-            
-            if (userInfo && userEmail && userPhoto) {
-                userInfo.style.display = 'flex';
-                userEmail.textContent = user.email;
-                userPhoto.src = user.photoURL;
-            }
+            loadOverallProgress();
+        } else {
+            console.log("No user logged in");
         }
     });
 });
-
 
 function updateProgress(totalQuestions, correctAnswers) {
     const totalElement = document.getElementById('total-questions');
@@ -28,6 +23,8 @@ function updateProgress(totalQuestions, correctAnswers) {
         return;
     }
 
+    console.log(`Updating display with: ${correctAnswers}/${totalQuestions}`);
+
     // Update numbers
     totalElement.textContent = totalQuestions;
     correctElement.textContent = correctAnswers;
@@ -36,12 +33,9 @@ function updateProgress(totalQuestions, correctAnswers) {
     const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
     semicircle.style.setProperty('--progress', `${accuracy}%`);
     percentage.textContent = `${Math.round(accuracy)}%`;
+    
+    console.log(`Updated accuracy to: ${accuracy}%`);
 }
-
-// Example usage:
-// updateProgress(10, 7); // 70% accuracy
-
-// ... existing updateProgress function ...
 
 function saveQuizResult(category, totalQuestions, correctAnswers) {
     console.log("Attempting to save quiz result...");
@@ -82,12 +76,15 @@ function saveQuizResult(category, totalQuestions, correctAnswers) {
 }
 
 function loadOverallProgress() {
+    console.log("Loading overall progress...");
     const user = firebase.auth().currentUser;
     
     if (!user) {
-        console.log("No user logged in");
+        console.log("No user logged in in loadOverallProgress");
         return;
     }
+
+    console.log("Fetching results for user:", user.uid);
 
     // Get all quiz results for the user
     firebase.firestore().collection('users')
@@ -98,26 +95,19 @@ function loadOverallProgress() {
             let totalQuestions = 0;
             let totalCorrect = 0;
 
+            console.log("Found results:", querySnapshot.size);
+
             querySnapshot.forEach((doc) => {
                 const result = doc.data();
+                console.log("Processing result:", result);
                 totalQuestions += result.totalQuestions;
                 totalCorrect += result.correctAnswers;
             });
 
-            // Update the progress display with overall totals
+            console.log(`Updating progress with: ${totalCorrect}/${totalQuestions}`);
             updateProgress(totalQuestions, totalCorrect);
         })
         .catch((error) => {
             console.error("Error loading progress:", error);
         });
 }
-
-// Call loadOverallProgress when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            loadOverallProgress();
-        }
-    });
-});
-
