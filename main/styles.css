@@ -82,50 +82,80 @@
     }
 }
 
-/* Add these progress display styles */
-#progress-display {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 1000;
-    color: black;
-    min-width: 200px;
+/* Update the semicircle styles */
+.semicircle-container {
+    text-align: center;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 15px;
 }
 
-#progress-display h3 {
-    margin: 0 0 10px 0;
+.semicircle-progress {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.semicircle {
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    border-radius: 100px 100px 0 0;
+    background: #e9ecef;
+    overflow: hidden;
+}
+
+.semicircle::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    border-radius: 100px 100px 0 0;
+    background: #007bff;
+    clip-path: polygon(
+        50% 100%,
+        50% 0%,
+        calc(50% + (var(--progress, 0) * 0.5%)) 0%,
+        calc(50% + (var(--progress, 0) * 0.5%)) 100%
+    );
+    transition: clip-path 0.5s ease;
+}
+
+/* Add endpoint dots */
+.semicircle::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.endpoint-dots::before,
+.endpoint-dots::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 8px;
+    background: #007bff;
+    border-radius: 50%;
+}
+
+.endpoint-dots::before {
+    left: 0;
+}
+
+.endpoint-dots::after {
+    right: 0;
+}
+
+.percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: bold;
     color: #333;
-}
-
-#progress-display p {
-    margin: 5px 0;
-    color: #666;
-}
-
-/* Change this in main/styles.css */
-.main-page-progress {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 1000;
-    color: black;
-    min-width: 200px;
-}
-
-.main-page-progress h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-}
-
-.main-page-progress p {
-    margin: 5px 0;
-    color: #666;
 }
