@@ -1,3 +1,8 @@
+window.addEventListener('online', function() {
+    console.log('Back online - refreshing progress...');
+    loadOverallProgress();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Page loaded, checking auth state...");
 
@@ -67,56 +72,45 @@ function updateProgress(totalQuestions, correctAnswers) {
 }
 
 function saveQuizResult(category, totalQuestions, correctAnswers) {
-    console.log("Attempting to save quiz result...");
-    
-    const user = firebase.auth().currentUser;
-    
-    if (!user) {
-        console.error("No user logged in - cannot save results");
-        return Promise.reject("No user logged in");
-    }
+    console.log("Saving quiz result:", { category, totalQuestions, correctAnswers });
 
-    // Create the result object
     const result = {
-        timestamp: firebase.firestore.Timestamp.now(),  // Use Firebase timestamp
+        timestamp: new Date().toISOString(),
         category: category,
-        totalQuestions: Number(totalQuestions),  // Ensure numbers, not strings
+        totalQuestions: Number(totalQuestions),
         correctAnswers: Number(correctAnswers),
         accuracy: (correctAnswers / totalQuestions) * 100
     };
 
-    console.log("Saving result:", result);
+    // Save to localStorage immediately
+    try {
+        let localResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+        localResults.push(result);
+        localStorage.setItem('quizResults', JSON.stringify(localResults));
+        console.log("Saved to localStorage");
+    } catch (e) {
+        console.error("Error saving to localStorage:", e);
+    }
 
-    // Return the save promise
+    // Try to save to Firebase
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        console.error("No user logged in - saved to localStorage only");
+        return Promise.resolve();
+    }
+
     return firebase.firestore()
         .collection('users')
         .doc(user.uid)
         .collection('quizResults')
         .add(result)
         .then(() => {
-            console.log("Quiz result saved to Firestore successfully!");
-            // Try to update local storage as backup
-            try {
-                let localResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
-                localResults.push(result);
-                localStorage.setItem('quizResults', JSON.stringify(localResults));
-                console.log("Result also saved to localStorage");
-            } catch (e) {
-                console.warn("Could not save to localStorage:", e);
-            }
+            console.log("Saved to Firebase successfully");
         })
         .catch(error => {
-            console.error("Firebase save error:", error);
-            // Still try to save locally if Firebase fails
-            try {
-                let localResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
-                localResults.push(result);
-                localStorage.setItem('quizResults', JSON.stringify(localResults));
-                console.log("Saved to localStorage as backup");
-            } catch (e) {
-                console.error("Complete save failure:", e);
-            }
-            throw error; // Re-throw to handle in calling code
+            console.error("Error saving to Firebase:", error);
+            // We already saved to localStorage, so we can still show the results
+            return Promise.resolve();
         });
 }
 
@@ -132,57 +126,76 @@ function refreshProgress() {
 
 // Update loadOverallProgress to return a Promise
 function loadOverallProgress() {
-    return new Promise((resolve, reject) => {
-        const user = firebase.auth().currentUser;
-        
-        if (!user) {
-            console.error("No user logged in");
-            return reject("No user logged in");
-        }
+    console.log("Loading overall progress...");
+    const user = firebase.auth().currentUser;
+    
+    if (!user) {
+        console.log("No user logged in");
+        return;
+    }
 
-        console.log("Loading progress for user:", user.uid);
+    // Try to get data from localStorage first
+    try {
+        const localResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+        let totalQuestions = 0;
+        let totalCorrect = 0;
 
-        firebase.firestore()
-            .collection('users')
-            .doc(user.uid)
-            .collection('quizResults')
-            .get()
-            .then(querySnapshot => {
-                let totalQuestions = 0;
-                let totalCorrect = 0;
+        localResults.forEach(result => {
+            totalQuestions += Number(result.totalQuestions);
+            totalCorrect += Number(result.correctAnswers);
+        });
 
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    totalQuestions += Number(data.totalQuestions);
-                    totalCorrect += Number(data.correctAnswers);
-                });
+        console.log("Local storage totals:", { totalQuestions, totalCorrect });
+        updateProgressDisplay(totalQuestions, totalCorrect);
+    } catch (e) {
+        console.error("Error reading from localStorage:", e);
+    }
 
-                console.log(`Loaded totals: ${totalCorrect}/${totalQuestions}`);
+    // Then try to get from Firebase
+    firebase.firestore()
+        .collection('users')
+        .doc(user.uid)
+        .collection('quizResults')
+        .get()
+        .then(querySnapshot => {
+            let totalQuestions = 0;
+            let totalCorrect = 0;
 
-                // Update UI elements if they exist
-                const elements = {
-                    total: document.getElementById('total-questions'),
-                    correct: document.getElementById('correct-answers'),
-                    semicircle: document.querySelector('.semicircle'),
-                    percentage: document.querySelector('.percentage')
-                };
-
-                if (elements.total && elements.correct) {
-                    elements.total.textContent = totalQuestions;
-                    elements.correct.textContent = totalCorrect;
-                    
-                    if (elements.semicircle && elements.percentage) {
-                        const accuracy = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
-                        elements.semicircle.style.setProperty('--progress', `${accuracy}%`);
-                        elements.percentage.textContent = `${Math.round(accuracy)}%`;
-                    }
-                }
-
-                resolve({ totalQuestions, totalCorrect });
-            })
-            .catch(error => {
-                console.error("Error loading progress:", error);
-                reject(error);
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                totalQuestions += Number(data.totalQuestions);
+                totalCorrect += Number(data.correctAnswers);
             });
-    });
+
+            console.log("Firebase totals:", { totalQuestions, totalCorrect });
+            updateProgressDisplay(totalQuestions, totalCorrect);
+        })
+        .catch(error => {
+            console.error("Error loading from Firebase:", error);
+            // We already displayed localStorage data as fallback
+        });
+}
+
+// Separate function to update the display
+function updateProgressDisplay(totalQuestions, totalCorrect) {
+    const totalElement = document.getElementById('total-questions');
+    const correctElement = document.getElementById('correct-answers');
+    const semicircle = document.querySelector('.semicircle');
+    const percentage = document.querySelector('.percentage');
+
+    if (!totalElement || !correctElement || !semicircle || !percentage) {
+        console.error("Progress elements not found");
+        return;
+    }
+
+    console.log("Updating display with:", { totalQuestions, totalCorrect });
+
+    totalElement.textContent = totalQuestions;
+    correctElement.textContent = totalCorrect;
+    
+    const accuracy = totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+    semicircle.style.setProperty('--progress', `${accuracy}%`);
+    percentage.textContent = `${Math.round(accuracy)}%`;
+    
+    console.log(`Updated accuracy to: ${accuracy}%`);
 }

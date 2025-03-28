@@ -385,11 +385,8 @@ function checkAnswers() {
         if (answer === selectedQuestions[index].correctAnswer) score++;
     });
 
-    // Save results first
     saveQuizResult('Business Management', numberOfQuestions, score)
         .then(() => {
-            console.log("Results saved successfully");
-            // Now display results
             let feedback = '';
             currentAnswers.forEach((answer, index) => {
                 feedback += `Question ${index + 1}: ${answer === selectedQuestions[index].correctAnswer ? 'Correct' : 'Incorrect'}<br>`;
@@ -399,12 +396,9 @@ function checkAnswers() {
             document.getElementById('results').innerHTML = `
                 Score: ${score}/${numberOfQuestions}<br>
                 ${feedback}
+                <button onclick="location.reload()" class="button">Try Another Quiz</button>
                 <button onclick="window.location.href='../index.html'" class="button">Return to Home</button>
             `;
-        })
-        .catch(error => {
-            console.error("Error saving results:", error);
-            alert("There was an error saving your results. Please try again.");
         });
 }
 
