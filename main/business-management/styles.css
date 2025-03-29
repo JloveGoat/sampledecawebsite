@@ -392,3 +392,38 @@ body {
     scrollbar-width: thin; /* Thin scrollbar */
     scrollbar-color: #4CAF50 #003366; /* Thumb color and track color */
 }
+
+.quiz-results {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.question-result {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-left: 4px solid #ddd;
+}
+
+.question-result.correct {
+    border-left-color: green;
+}
+
+.question-result.incorrect {
+    border-left-color: red;
+}
+
+.feedback-section {
+    margin: 20px 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.button-group {
+    margin-top: 20px;
+}
+
+.button-group button {
+    margin: 0 10px;
+}

@@ -294,6 +294,7 @@ let timer; // Timer variable
 let timeLeft; // Time left in seconds
 let isPaused = false; // Flag to check if the timer is paused
 
+
 function selectRandomQuestions() {
     // Randomly select the specified number of questions from the array
     const shuffledQuestions = selectedQuestions.sort(() => 0.5 - Math.random());
@@ -336,30 +337,62 @@ function selectAnswer(questionIndex, optionIndex) {
 }
 
 function checkAnswers() {
+    console.log("checkAnswers function called");
+    
     if (currentAnswers.includes(null)) {
         document.getElementById('results').innerHTML = 'Please answer all questions!';
         return;
     }
 
     let score = 0;
-    currentAnswers.forEach((answer, index) => {
-        if (answer === selectedQuestions[index].correctAnswer) score++;
+    let feedback = '';
+
+    // Clear previous results first
+    document.getElementById('results').innerHTML = '';
+
+    // Generate detailed feedback
+    selectedQuestions.forEach((question, index) => {
+        const userAnswer = currentAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        if (isCorrect) {
+            score++;
+        }
+
+        feedback += `
+            <div class="question-result ${isCorrect ? 'correct' : 'incorrect'}">
+                <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
+                <p style="color: ${isCorrect ? 'green' : 'red'}">
+                    Your Answer: ${question.options[userAnswer]}
+                    ${isCorrect ? '✓' : '✗'}
+                </p>
+                ${!isCorrect ? `<p style="color: blue">Correct Answer: ${question.options[question.correctAnswer]}</p>` : ''}
+                <hr>
+            </div>
+        `;
     });
 
-    saveQuizResult('Business Management', numberOfQuestions, score)
-        .then(() => {
-            let feedback = '';
-            currentAnswers.forEach((answer, index) => {
-                feedback += `Question ${index + 1}: ${answer === selectedQuestions[index].correctAnswer ? 'Correct' : 'Incorrect'}<br>`;
-                feedback += `Correct Answer: ${selectedQuestions[index].options[selectedQuestions[index].correctAnswer]}<br><br>`;
-            });
-
-            document.getElementById('results').innerHTML = `
-                Score: ${score}/${numberOfQuestions}<br>
+    // Display results and feedback
+    document.getElementById('results').innerHTML = `
+        <div class="quiz-results">
+            <h3>Score: ${score}/${numberOfQuestions} (${Math.round((score/numberOfQuestions) * 100)}%)</h3>
+            <div class="feedback-section">
                 ${feedback}
+            </div>
+            <div class="button-group">
                 <button onclick="location.reload()" class="button">Try Another Quiz</button>
                 <button onclick="window.location.href='../index.html'" class="button">Return to Home</button>
-            `;
+            </div>
+        </div>
+    `;
+
+    // Save results
+    saveQuizResult('Business Management', numberOfQuestions, score)
+        .then(() => {
+            console.log("Quiz results saved successfully");
+        })
+        .catch(error => {
+            console.error("Error saving quiz results:", error);
         });
 }
 
