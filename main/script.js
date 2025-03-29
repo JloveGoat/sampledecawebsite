@@ -1,8 +1,3 @@
-window.addEventListener('online', function() {
-    console.log('Back online - refreshing progress...');
-    loadOverallProgress();
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Page loaded, checking auth state...");
 
