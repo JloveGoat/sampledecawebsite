@@ -347,9 +347,6 @@ function checkAnswers() {
     let score = 0;
     let feedback = '';
 
-    // Clear previous results first
-    document.getElementById('results').innerHTML = '';
-
     // Generate detailed feedback
     selectedQuestions.forEach((question, index) => {
         const userAnswer = currentAnswers[index];
@@ -361,13 +358,19 @@ function checkAnswers() {
 
         feedback += `
             <div class="question-result ${isCorrect ? 'correct' : 'incorrect'}">
-                <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
-                <p style="color: ${isCorrect ? 'green' : 'red'}">
-                    Your Answer: ${question.options[userAnswer]}
-                    ${isCorrect ? '✓' : '✗'}
-                </p>
-                ${!isCorrect ? `<p style="color: blue">Correct Answer: ${question.options[question.correctAnswer]}</p>` : ''}
-                <hr>
+                <h4>Question ${index + 1}:</h4>
+                <p>${question.question}</p>
+                <div class="answer-text">
+                    <p class="${isCorrect ? 'correct-answer' : 'incorrect-answer'}">
+                        Your Answer: ${question.options[userAnswer]}
+                        ${isCorrect ? ' ✓' : ' ✗'}
+                    </p>
+                    ${!isCorrect ? `
+                        <p class="correct-answer">
+                            Correct Answer: ${question.options[question.correctAnswer]}
+                        </p>
+                    ` : ''}
+                </div>
             </div>
         `;
     });
@@ -375,7 +378,8 @@ function checkAnswers() {
     // Display results and feedback
     document.getElementById('results').innerHTML = `
         <div class="quiz-results">
-            <h3>Score: ${score}/${numberOfQuestions} (${Math.round((score/numberOfQuestions) * 100)}%)</h3>
+            <h3>Quiz Results</h3>
+            <h4>Score: ${score}/${numberOfQuestions} (${Math.round((score/numberOfQuestions) * 100)}%)</h4>
             <div class="feedback-section">
                 ${feedback}
             </div>
